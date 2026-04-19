@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Apiz, VERSION } from "../src/index.js";
 
-describe("@apiz/sdk smoke", () => {
+describe("apiz-sdk smoke", () => {
   it("exports a VERSION string", () => {
     expect(VERSION).toMatch(/^\d+\.\d+\.\d+/);
   });

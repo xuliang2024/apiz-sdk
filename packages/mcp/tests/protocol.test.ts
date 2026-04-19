@@ -1,4 +1,4 @@
-import { Apiz } from "@apiz/sdk";
+import { Apiz } from "apiz-sdk";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { http, HttpResponse } from "msw";
@@ -87,7 +87,7 @@ async function makeConnectedPair(): Promise<{ client: Client; cleanup: () => Pro
   };
 }
 
-describe("@apiz/mcp protocol", () => {
+describe("apiz-mcp protocol", () => {
   it("lists all 8 tools matching legacy user-xskill-ai", async () => {
     const { client, cleanup } = await makeConnectedPair();
     try {

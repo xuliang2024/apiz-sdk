@@ -1,9 +1,9 @@
 /**
- * @apiz/mcp — Model Context Protocol server for apiz.ai
+ * apiz-mcp — Model Context Protocol server for apiz.ai
  *
  * Drop-in replacement for the legacy `user-xskill-ai` MCP. All 8 tools
  * (generate, get_result, search_models, guide, account, speak, parse_video,
- * transfer_url) delegate to `@apiz/sdk`, so behavior stays in lock-step
+ * transfer_url) delegate to `apiz-sdk`, so behavior stays in lock-step
  * with the official SDK.
  */
 

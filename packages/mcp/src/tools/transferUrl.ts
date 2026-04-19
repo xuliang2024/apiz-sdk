@@ -1,4 +1,4 @@
-import type { Apiz, TransferUrlType } from "@apiz/sdk";
+import type { Apiz, TransferUrlType } from "apiz-sdk";
 import type { ToolHandler } from "./index.js";
 
 const VALID_TYPES = new Set<TransferUrlType>(["image", "audio"]);

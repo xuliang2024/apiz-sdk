@@ -20,12 +20,12 @@ importers:
 
   packages/mcp:
     dependencies:
-      '@apiz/sdk':
-        specifier: workspace:*
-        version: link:../sdk
       '@modelcontextprotocol/sdk':
         specifier: ^1.0.4
         version: 1.29.0(zod@4.3.6)
+      apiz-sdk:
+        specifier: ^0.1.0
+        version: link:../sdk
     devDependencies:
       '@types/node':
         specifier: ^22.7.5

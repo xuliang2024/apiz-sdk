@@ -1,5 +1,5 @@
 /**
- * @apiz/sdk — Official TypeScript SDK for apiz.ai
+ * apiz-sdk — Official TypeScript SDK for apiz.ai
  *
  * Phase 2A: API surface and type definitions are complete; HTTP transport,
  * helpers and waitFor polling throw `ApizError("not implemented")` until

@@ -1,5 +1,5 @@
 {
-  "name": "@apiz/sdk",
+  "name": "apiz-sdk",
   "version": "0.1.0",
   "description": "Official TypeScript SDK for the apiz.ai AI generation platform",
   "keywords": [

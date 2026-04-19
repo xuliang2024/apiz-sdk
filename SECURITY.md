@@ -37,7 +37,7 @@ any other CI step.
 
 If a test key is suspected of leakage:
 
-1. Immediately rotate at <https://www.xskill.ai/#/v2/api-keys>
+1. Immediately rotate at <https://apiz.ai/#/v2/api-keys>
 2. Update the new value in `sdk/.env.local` (local) and in GitHub Actions secret
    `APIZ_TEST_API_KEY` (CI)
 3. Audit git history with `git log -p -S 'sk-' -- sdk/` (filtered to sdk subtree)

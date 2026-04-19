@@ -34,7 +34,7 @@ func newAuthCmd(_ *rootFlags) *cobra.Command {
 				loginProfile = "default"
 			}
 			if loginKey == "" {
-				fmt.Fprint(out, "API Key (get one at https://www.xskill.ai/#/v2/api-keys): ")
+				fmt.Fprint(out, "API Key (get one at https://apiz.ai/#/v2/api-keys): ")
 				reader := bufio.NewReader(in)
 				line, err := reader.ReadString('\n')
 				if err != nil {

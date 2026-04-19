@@ -1,4 +1,4 @@
-import type { Apiz, GenerateOptions } from "@apiz/sdk";
+import type { Apiz, GenerateOptions } from "apiz-sdk";
 import type { ToolHandler } from "./index.js";
 
 export const generateTool: ToolHandler = {

@@ -1,4 +1,4 @@
-import type { Apiz, ModelCapability, ModelCategory } from "@apiz/sdk";
+import type { Apiz, ModelCapability, ModelCategory } from "apiz-sdk";
 import type { ToolHandler } from "./index.js";
 
 const VALID_CATEGORIES = new Set(["image", "video", "audio", "all"]);

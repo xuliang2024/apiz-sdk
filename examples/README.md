@@ -11,7 +11,7 @@ language that fits your toolchain.
 | `03-parse-and-tts` | Parse a video link (free) and synthesize a short voice-over | [ts](03-parse-and-tts/index.ts), [py](03-parse-and-tts/main.py), [sh](03-parse-and-tts/cli.sh) |
 
 All examples read `APIZ_API_KEY` from the environment. Get a key at
-<https://www.xskill.ai/#/v2/api-keys>.
+<https://apiz.ai/#/v2/api-keys>.
 
 ## Run
 

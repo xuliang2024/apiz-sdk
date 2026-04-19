@@ -1,4 +1,4 @@
-import type { Apiz, SpeakModel } from "@apiz/sdk";
+import type { Apiz, SpeakModel } from "apiz-sdk";
 import type { ToolHandler } from "./index.js";
 
 const VALID_MODELS = new Set([

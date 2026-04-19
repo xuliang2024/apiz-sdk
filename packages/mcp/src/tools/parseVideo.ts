@@ -1,4 +1,4 @@
-import type { Apiz } from "@apiz/sdk";
+import type { Apiz } from "apiz-sdk";
 import type { ToolHandler } from "./index.js";
 
 export const parseVideoTool: ToolHandler = {

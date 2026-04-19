@@ -140,7 +140,7 @@ cd python && uv sync && uv run pytest
 cd cli && go build ./... && go test ./...
 ```
 
-E2E suite needs an API key from <https://www.xskill.ai/#/v2/api-keys>:
+E2E suite needs an API key from <https://apiz.ai/#/v2/api-keys>:
 
 ```bash
 cp .env.example .env.local

@@ -1,4 +1,4 @@
-import type { Apiz } from "@apiz/sdk";
+import type { Apiz } from "apiz-sdk";
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 
 import { accountTool } from "./account.js";

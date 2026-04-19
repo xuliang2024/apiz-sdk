@@ -39,7 +39,7 @@ asyncio.run(main())
 
 | Var | Default | Purpose |
 |---|---|---|
-| `APIZ_API_KEY` | (none) | Bearer token. Get one at <https://www.xskill.ai/#/v2/api-keys> |
+| `APIZ_API_KEY` | (none) | Bearer token. Get one at <https://apiz.ai/#/v2/api-keys> |
 | `APIZ_BASE_URL` | `https://api.apiz.ai` | Override backend |
 | `APIZ_TIMEOUT` | `60` | Per-request timeout in seconds |
 
