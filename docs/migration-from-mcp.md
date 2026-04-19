@@ -7,10 +7,15 @@ backend, so you can pick whichever fits your workflow:
 
 | Old | New | When to use |
 |---|---|---|
-| `CallMcpTool { server: "user-xskill-ai", toolName: "..." }` in Cursor | `npx -y @apiz/mcp` (drop-in MCP server) | Cursor / Claude Desktop / Cline users |
-| (no equivalent) | `npm install @apiz/sdk` | Building Node.js / Bun / Deno apps |
+| `CallMcpTool { server: "user-xskill-ai", toolName: "..." }` in Cursor | `npx -y apiz-mcp` (drop-in MCP server) | Cursor / Claude Desktop / Cline users |
+| (no equivalent) | `npm install apiz-sdk` | Building Node.js / Bun / Deno apps |
 | (no equivalent) | `pip install apiz` | Building Python apps |
 | (no equivalent) | `curl -fsSL https://apiz.ai/cli \| sh` (single binary) | Shell scripts, CI, ad-hoc usage |
+
+> The npm packages are `apiz-sdk` and `apiz-mcp` (unscoped, with `-` suffix)
+> because `@apiz/*` and unscoped `apiz` are both taken on npm by other
+> accounts. See [package-naming.md](./package-naming.md) for the full
+> rationale and rejected alternatives.
 
 ## 1. MCP drop-in (recommended for AI agents)
 
@@ -24,14 +29,14 @@ Edit `~/.cursor/mcp.json` (or your client's MCP config):
     // With this:
     "apiz": {
       "command": "npx",
-      "args": ["-y", "@apiz/mcp"],
+      "args": ["-y", "apiz-mcp"],
       "env": { "APIZ_API_KEY": "sk-..." }
     }
   }
 }
 ```
 
-`@apiz/mcp` exposes the same eight tools (`generate`, `get_result`,
+`apiz-mcp` exposes the same eight tools (`generate`, `get_result`,
 `search_models`, `guide`, `account`, `speak`, `parse_video`, `transfer_url`),
 with identical input schemas, so your existing prompts that reference these
 tools keep working.
@@ -45,7 +50,7 @@ and avoids the MCP transport layer.
 ### TypeScript
 
 ```ts
-import { Apiz } from "@apiz/sdk";
+import { Apiz } from "apiz-sdk";
 
 const client = new Apiz();
 const result = await client.generate({

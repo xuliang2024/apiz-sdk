@@ -7,12 +7,17 @@ contract and behavior.
 
 ## Products
 
-| Product | Path | Distribution | Purpose |
-|---|---|---|---|
-| `@apiz/sdk` | [packages/sdk](packages/sdk) | npm | TypeScript SDK (Node 18+ / Bun / Deno / browsers) |
-| `@apiz/mcp` | [packages/mcp](packages/mcp) | npm | MCP server, runs via `npx @apiz/mcp` |
-| `apiz` (Python) | [python](python) | PyPI | Python 3.9+ SDK with sync + async clients |
-| `apiz` (CLI) | [cli](cli) | Homebrew / Scoop / GitHub Releases / npm wrapper | Single-binary CLI written in Go |
+| Product | npm / PyPI name | Path | Install | Purpose |
+|---|---|---|---|---|
+| TypeScript SDK | **`apiz-sdk`** | [packages/sdk](packages/sdk) | `npm install apiz-sdk` | Node 18+ / Bun / Deno / browsers |
+| MCP server | **`apiz-mcp`** | [packages/mcp](packages/mcp) | `npx -y apiz-mcp` | Cursor / Claude Desktop / Cline |
+| Python SDK | **`apiz`** | [python](python) | `pip install apiz` | Python 3.9+ sync + async clients |
+| CLI | **`apiz`** | [cli](cli) | `brew install apiz-ai/tap/apiz` | Single-binary Go CLI |
+
+> **Why the npm packages aren't called `apiz` / `@apiz/*`** — see
+> [docs/package-naming.md](docs/package-naming.md). Short version: the
+> unscoped `apiz` name and the `@apiz`/`@apiz-ai`/`@apizai` scopes on npm are
+> all taken by other accounts; PyPI's `apiz` was available so we got it.
 
 ## Architecture
 
@@ -21,10 +26,10 @@ contract and behavior.
                          |
        +----------+------+------+----------+
        |          |             |          |
-   @apiz/sdk  apiz (py)   cli/internal  (no shared code
+   apiz-sdk   apiz (py)   cli/internal  (no shared code
        |          |       (Go HTTP)     across langs:
        |          |             |        contract guarded
-   @apiz/mcp     CLI users    apiz CLI   by shared fixtures)
+   apiz-mcp     CLI users    apiz CLI   by shared fixtures)
 ```
 
 Each language SDK is independent (no shared code), but the test suites all
@@ -32,18 +37,18 @@ load the same fixtures from [tests/fixtures](tests/fixtures), so contract
 drift is caught immediately.
 
 The MCP server is the only product that depends on another (it composes
-`@apiz/sdk`).
+`apiz-sdk`).
 
 ## Quick start
 
 ### TypeScript / JavaScript
 
 ```bash
-npm install @apiz/sdk
+npm install apiz-sdk
 ```
 
 ```ts
-import { Apiz } from "@apiz/sdk";
+import { Apiz } from "apiz-sdk";
 const client = new Apiz();  // reads APIZ_API_KEY from env
 const balance = await client.account.balance();
 ```
@@ -89,7 +94,7 @@ apiz generate "a cat on rainbow" --model fal-ai/flux-2/flash --wait
   "mcpServers": {
     "apiz": {
       "command": "npx",
-      "args": ["-y", "@apiz/mcp"],
+      "args": ["-y", "apiz-mcp"],
       "env": { "APIZ_API_KEY": "sk-..." }
     }
   }
@@ -111,12 +116,12 @@ The legacy `XSKILL_API_KEY` env var is also accepted for backward compatibility.
 
 ```
 sdk/
-  packages/sdk/             @apiz/sdk (TypeScript)
-  packages/mcp/             @apiz/mcp (TypeScript, depends on @apiz/sdk)
+  packages/sdk/             apiz-sdk (TypeScript)
+  packages/mcp/             apiz-mcp (TypeScript, depends on apiz-sdk)
   python/                   apiz (Python)
   cli/                      apiz (Go)
   tests/fixtures/           Language-agnostic test fixtures
-  docs/                     API reference, migration guides
+  docs/                     API reference, migration guides, naming notes
   examples/                 Cross-language usage examples
   .github/workflows/        CI (unit + integration) + E2E (live backend)
   .changeset/               JS package version management

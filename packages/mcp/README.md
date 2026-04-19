@@ -1,4 +1,4 @@
-# @apiz/mcp
+# apiz-mcp
 
 MCP (Model Context Protocol) server that exposes the
 [apiz.ai](https://apiz.ai) AI generation platform to MCP-compatible clients
@@ -6,6 +6,10 @@ like Cursor, Claude Desktop and Cline.
 
 > **Status: Phase 1B scaffolding.** Tool definitions are stubbed; the stdio
 > server lands in Phase 5B.
+>
+> _Package name note: published as `apiz-mcp` (not `@apiz/mcp`) because the
+> `@apiz` scope and unscoped `apiz` are both reserved on npm by other
+> accounts. Depends on `apiz-sdk`._
 
 ## Use it (when shipped)
 
@@ -16,7 +20,7 @@ like Cursor, Claude Desktop and Cline.
   "mcpServers": {
     "apiz": {
       "command": "npx",
-      "args": ["-y", "@apiz/mcp"],
+      "args": ["-y", "apiz-mcp"],
       "env": { "APIZ_API_KEY": "sk-..." }
     }
   }

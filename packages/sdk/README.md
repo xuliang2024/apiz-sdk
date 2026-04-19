@@ -1,22 +1,26 @@
-# @apiz/sdk
+# apiz-sdk
 
 Official TypeScript SDK for the [apiz.ai](https://apiz.ai) AI generation
 platform.
 
 > **Status: Phase 1B scaffolding.** Stub exports only. Full HTTP client,
 > resources, error types and helpers arrive in Phase 2B.
+>
+> _Package name note: this SDK is published as `apiz-sdk` (not `@apiz/sdk`)
+> because the `@apiz` scope and unscoped `apiz` are both reserved on npm by
+> other accounts. The Python package is just `apiz` (PyPI was free)._
 
 ## Install
 
 ```bash
-npm install @apiz/sdk
+npm install apiz-sdk
 # or pnpm / yarn / bun
 ```
 
 ## Usage (preview)
 
 ```ts
-import { Apiz } from "@apiz/sdk";
+import { Apiz } from "apiz-sdk";
 
 const client = new Apiz({ apiKey: process.env.APIZ_API_KEY });
 
