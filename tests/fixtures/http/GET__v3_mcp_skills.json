@@ -1,0 +1,22 @@
+{
+  "code": 200,
+  "data": {
+    "skills": [
+      {
+        "id": "sora-2",
+        "name": "Sora 2",
+        "category": "video",
+        "description": "Generate videos with OpenAI Sora 2",
+        "models": ["sora-2-pro", "sora-2-standard"]
+      },
+      {
+        "id": "flux2-flash",
+        "name": "Flux 2 Flash",
+        "category": "image",
+        "description": "Fast image generation with Flux 2 Flash",
+        "models": ["fal-ai/flux-2/flash"]
+      }
+    ],
+    "total": 2
+  }
+}

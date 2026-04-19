@@ -1,0 +1,14 @@
+{
+  "code": 422,
+  "detail": "Invalid params for model 'fal-ai/flux-2/flash'",
+  "data": {
+    "params_schema": {
+      "type": "object",
+      "required": ["prompt"],
+      "properties": {
+        "prompt": { "type": "string" }
+      }
+    },
+    "errors": [{ "field": "prompt", "message": "field required" }]
+  }
+}

@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+out
+coverage
+.changeset
+pnpm-lock.yaml
+*.min.js
+**/__snapshots__/
+python/
+cli/
+tests/fixtures/

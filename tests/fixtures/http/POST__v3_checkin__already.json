@@ -1,0 +1,8 @@
+{
+  "code": 200,
+  "data": {
+    "success": false,
+    "already_checked_in": true,
+    "message": "今日已签到，请明天再来！"
+  }
+}

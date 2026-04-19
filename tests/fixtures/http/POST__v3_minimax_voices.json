@@ -1,0 +1,27 @@
+{
+  "code": 200,
+  "message": "获取音色列表成功",
+  "data": {
+    "user_voices": [],
+    "public_voices": [
+      {
+        "voice_id": "male-qn-qingse",
+        "voice_name": "青涩青年",
+        "tags": ["男", "中文", "青年"],
+        "audio_url": "https://cdn-video.51sux.com/voices/male-qn-qingse-sample.mp3"
+      },
+      {
+        "voice_id": "female-shaonv",
+        "voice_name": "少女",
+        "tags": ["女", "中文", "少女"],
+        "audio_url": "https://cdn-video.51sux.com/voices/female-shaonv-sample.mp3"
+      }
+    ],
+    "statistics": {
+      "user_total_count": 0,
+      "user_active_count": 0,
+      "user_expired_count": 0,
+      "public_voices_count": 2
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "apiz-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "apiz.ai SDK monorepo (TypeScript / Python / Go / MCP)",
+  "homepage": "https://apiz.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xuliang2024/apiz-sdk.git"
+  },
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter \"./packages/*\" build",
+    "test": "pnpm -r --filter \"./packages/*\" test",
+    "test:e2e": "pnpm -r --filter \"./packages/*\" test:e2e",
+    "lint": "pnpm -r --filter \"./packages/*\" lint",
+    "typecheck": "pnpm -r --filter \"./packages/*\" typecheck",
+    "clean": "pnpm -r --filter \"./packages/*\" clean",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "pnpm build && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.9",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3"
+  }
+}

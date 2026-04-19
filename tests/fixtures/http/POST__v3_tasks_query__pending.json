@@ -1,0 +1,9 @@
+{
+  "code": 200,
+  "data": {
+    "task_id": "task_async_demo_001",
+    "status": "pending",
+    "channel": "api",
+    "model": "wan/v2.6/image-to-video"
+  }
+}

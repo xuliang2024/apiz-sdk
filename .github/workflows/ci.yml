@@ -1,0 +1,139 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "sdk/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    paths:
+      - "sdk/**"
+
+# E2E hits live backend and runs separately in e2e.yml. CI only covers
+# unit + integration suites which never need a real API key.
+
+jobs:
+  # ---------------------------------------------------------------
+  # Secret scan: fails the build if anyone commits an apiz key.
+  # Must always succeed before further jobs run.
+  # ---------------------------------------------------------------
+  secret-scan:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan for apiz / xskill API keys
+        run: |
+          set -e
+          echo "Scanning tracked files for sk-[0-9a-fA-F]{40,} patterns..."
+          # Tracked files only — local .env.local is gitignored already.
+          # Exclude the example file and SECURITY.md (which document the
+          # placeholder pattern itself), plus the fixtures dir.
+          if git ls-files | xargs grep -InE 'sk-[0-9a-fA-F]{40,}' \
+              -- ':!sdk/.env.example' \
+              -- ':!sdk/SECURITY.md' \
+              -- ':!sdk/tests/fixtures/**'; then
+            echo "::error::Found an apiz API key pattern in a tracked file. Rotate the key, scrub from history, retry."
+            exit 1
+          fi
+          echo "OK — no real API keys in tracked files."
+
+  # ---------------------------------------------------------------
+  # JS workspace (sdk + mcp): typecheck, lint, test, build
+  # ---------------------------------------------------------------
+  js:
+    name: JS (typecheck + lint + test + build)
+    runs-on: ubuntu-latest
+    needs: secret-scan
+    defaults:
+      run:
+        working-directory: sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: sdk/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Typecheck
+        run: pnpm -r typecheck
+      - name: Lint
+        run: pnpm -r lint
+      - name: Test (mock-only)
+        run: pnpm -r test
+      - name: Build
+        run: pnpm -r build
+
+  # ---------------------------------------------------------------
+  # Python SDK: ruff + pytest + build (sdist + wheel)
+  # ---------------------------------------------------------------
+  python:
+    name: Python (lint + test + build)
+    runs-on: ubuntu-latest
+    needs: secret-scan
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.12"]
+    defaults:
+      run:
+        working-directory: sdk/python
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Ruff
+        run: uv run ruff check .
+      - name: Pytest (mock-only)
+        run: uv run pytest
+      - name: Build (sdist + wheel)
+        run: uv build
+
+  # ---------------------------------------------------------------
+  # Go CLI: gofmt check + golangci-lint + test + build
+  # ---------------------------------------------------------------
+  go:
+    name: Go (lint + test + build)
+    runs-on: ubuntu-latest
+    needs: secret-scan
+    defaults:
+      run:
+        working-directory: sdk/cli
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+          cache-dependency-path: sdk/cli/go.mod
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "::error::Files need gofmt:"
+            echo "$unformatted"
+            exit 1
+          fi
+      - name: Test
+        run: go test -race -coverprofile=coverage.out ./...
+      - name: Build
+        run: go build -o bin/apiz .
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.61
+          working-directory: sdk/cli

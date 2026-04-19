@@ -1,0 +1,69 @@
+{
+  "name": "@apiz/mcp",
+  "version": "0.1.0",
+  "description": "MCP (Model Context Protocol) server for apiz.ai — exposes generate / get_result / search_models / guide / account / speak / parse_video / transfer_url tools",
+  "keywords": [
+    "apiz",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "cursor",
+    "claude"
+  ],
+  "homepage": "https://apiz.ai",
+  "bugs": "https://github.com/xuliang2024/apiz-sdk/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xuliang2024/apiz-sdk.git",
+    "directory": "packages/mcp"
+  },
+  "license": "Apache-2.0",
+  "author": "apiz.ai",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "apiz-mcp": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist .vitest-cache *.tsbuildinfo",
+    "lint": "eslint src tests",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@apiz/sdk": "workspace:^",
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "@typescript-eslint/parser": "^8.8.1",
+    "eslint": "^9.12.0",
+    "msw": "^2.4.9",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.2"
+  }
+}

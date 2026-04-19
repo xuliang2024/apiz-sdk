@@ -1,0 +1,40 @@
+name: Release Python (PyPI)
+
+on:
+  push:
+    tags:
+      - "py-v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write  # for PyPI Trusted Publishers
+
+defaults:
+  run:
+    working-directory: sdk/python
+
+jobs:
+  release:
+    name: Build + publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - name: Install Python
+        run: uv python install 3.12
+      - name: Sync deps
+        run: uv sync --extra dev
+      - name: Lint
+        run: uv run ruff check .
+      - name: Test (mock)
+        run: uv run pytest
+      - name: Build (sdist + wheel)
+        run: uv build
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          uv pip install twine
+          uv run twine upload --non-interactive dist/*

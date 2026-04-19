@@ -1,0 +1,88 @@
+name: E2E (live backend)
+
+on:
+  schedule:
+    # Nightly at 17:00 UTC (~01:00 Asia/Shanghai)
+    - cron: "0 17 * * *"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Which SDK to test (js | python | go | mcp | all)"
+        required: false
+        default: "all"
+
+defaults:
+  run:
+    working-directory: sdk
+
+# E2E hits api.apiz.ai with a real key. Restrict to the repo itself
+# (not forks) so secrets aren't leaked.
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    name: Guard (secret available?)
+    runs-on: ubuntu-latest
+    outputs:
+      have_key: ${{ steps.check.outputs.have_key }}
+    steps:
+      - id: check
+        env:
+          KEY: ${{ secrets.APIZ_TEST_API_KEY }}
+        run: |
+          if [ -n "$KEY" ]; then
+            echo "have_key=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "have_key=no" >> "$GITHUB_OUTPUT"
+            echo "::warning::APIZ_TEST_API_KEY secret not set; E2E suite skipped."
+          fi
+
+  js:
+    name: JS E2E
+    runs-on: ubuntu-latest
+    needs: guard
+    if: needs.guard.outputs.have_key == 'yes' && (github.event.inputs.target == 'all' || github.event.inputs.target == 'js' || github.event_name == 'schedule')
+    env:
+      APIZ_TEST_API_KEY: ${{ secrets.APIZ_TEST_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Placeholder (populated in Phase 2B)
+        run: echo "JS E2E suite not yet bootstrapped."
+
+  python:
+    name: Python E2E
+    runs-on: ubuntu-latest
+    needs: guard
+    if: needs.guard.outputs.have_key == 'yes' && (github.event.inputs.target == 'all' || github.event.inputs.target == 'python' || github.event_name == 'schedule')
+    env:
+      APIZ_TEST_API_KEY: ${{ secrets.APIZ_TEST_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Placeholder (populated in Phase 3B)
+        run: echo "Python E2E suite not yet bootstrapped."
+
+  go:
+    name: Go E2E
+    runs-on: ubuntu-latest
+    needs: guard
+    if: needs.guard.outputs.have_key == 'yes' && (github.event.inputs.target == 'all' || github.event.inputs.target == 'go' || github.event_name == 'schedule')
+    env:
+      APIZ_TEST_API_KEY: ${{ secrets.APIZ_TEST_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Placeholder (populated in Phase 4B)
+        run: echo "Go E2E suite not yet bootstrapped."
+
+  mcp:
+    name: MCP E2E
+    runs-on: ubuntu-latest
+    needs: guard
+    if: needs.guard.outputs.have_key == 'yes' && (github.event.inputs.target == 'all' || github.event.inputs.target == 'mcp' || github.event_name == 'schedule')
+    env:
+      APIZ_TEST_API_KEY: ${{ secrets.APIZ_TEST_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Placeholder (populated in Phase 5B)
+        run: echo "MCP E2E suite not yet bootstrapped."

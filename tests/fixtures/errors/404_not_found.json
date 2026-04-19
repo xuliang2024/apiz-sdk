@@ -1,0 +1,4 @@
+{
+  "code": 404,
+  "detail": "Task not found: task_does_not_exist"
+}

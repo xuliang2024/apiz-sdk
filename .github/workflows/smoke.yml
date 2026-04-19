@@ -1,0 +1,74 @@
+name: Smoke (post-publish install check)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      js_version:
+        description: "@apiz/sdk version to install (or 'latest')"
+        required: false
+        default: "latest"
+      py_version:
+        description: "apiz PyPI version (or 'latest')"
+        required: false
+        default: "latest"
+      cli_version:
+        description: "apiz CLI version (or 'latest')"
+        required: false
+        default: "latest"
+
+jobs:
+  npm:
+    name: npm install + run example
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install package globally
+        run: |
+          v="${{ github.event.inputs.js_version || 'latest' }}"
+          npm install -g "@apiz/sdk@$v" tsx
+      - name: Sanity import (no network)
+        run: |
+          node -e "import('@apiz/sdk').then(m => { console.log('Apiz =', typeof m.Apiz, 'VERSION =', m.VERSION); })"
+
+  pypi:
+    name: pip install + run example
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install package
+        run: |
+          v="${{ github.event.inputs.py_version || 'latest' }}"
+          if [ "$v" = "latest" ]; then
+            pip install apiz
+          else
+            pip install "apiz==$v"
+          fi
+      - name: Sanity import
+        run: |
+          python -c "import apiz; print('apiz', apiz.__version__, 'Apiz =', apiz.Apiz)"
+
+  cli:
+    name: install.sh + apiz --version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download CLI binary
+        run: |
+          v="${{ github.event.inputs.cli_version || 'latest' }}"
+          if [ "$v" = "latest" ]; then
+            tag=$(curl -sSL https://api.github.com/repos/apiz-ai/sdk/releases/latest | grep tag_name | head -1 | cut -d'"' -f4)
+          else
+            tag="$v"
+          fi
+          curl -fsSL "https://github.com/apiz-ai/sdk/releases/download/${tag}/apiz_${tag#cli-v}_linux_amd64.tar.gz" -o apiz.tar.gz
+          tar xzf apiz.tar.gz
+      - name: Run version
+        run: ./apiz --version

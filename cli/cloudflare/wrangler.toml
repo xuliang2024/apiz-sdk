@@ -1,0 +1,32 @@
+# Cloudflare Worker that serves the apiz CLI installer + binary tarballs from
+# R2. Routes apiz.ai/cli* (more specific than apiz.ai/* served by the existing
+# `translate-web` worker, so this binding wins).
+#
+# Deploy:
+#   cd sdk/cli/cloudflare
+#   pnpm dlx wrangler deploy           # or `npm exec wrangler -- deploy`
+
+name = "apiz-cli"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+account_id = "11c47779f0d4c3d0e69ccc6c484dc589"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "apiz-cli"
+
+[[routes]]
+pattern = "apiz.ai/cli"
+zone_name = "apiz.ai"
+
+[[routes]]
+pattern = "apiz.ai/cli/*"
+zone_name = "apiz.ai"
+
+[[routes]]
+pattern = "www.apiz.ai/cli"
+zone_name = "apiz.ai"
+
+[[routes]]
+pattern = "www.apiz.ai/cli/*"
+zone_name = "apiz.ai"

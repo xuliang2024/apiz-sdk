@@ -1,0 +1,53 @@
+name: Release JS (npm)
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "sdk/.changeset/**"
+      - "sdk/packages/**"
+      - "sdk/.github/workflows/release-js.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+defaults:
+  run:
+    working-directory: sdk
+
+jobs:
+  release:
+    name: Version + publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: sdk/pnpm-lock.yaml
+          registry-url: "https://registry.npmjs.org/"
+      - name: Install
+        run: pnpm install --no-frozen-lockfile
+      - name: Build
+        run: pnpm -r build
+      - name: Test (mock)
+        run: pnpm -r test
+      - name: Create Release Pull Request or Publish
+        uses: changesets/action@v1
+        with:
+          publish: pnpm release
+          version: pnpm version
+          cwd: sdk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

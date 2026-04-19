@@ -1,0 +1,17 @@
+{
+  "code": 200,
+  "data": {
+    "task_id": "task_sync_demo_001",
+    "status": "completed",
+    "channel": "sync",
+    "model": "jimeng-4.5",
+    "price": 8,
+    "created_at": "2026-04-19T10:00:00Z",
+    "completed_at": "2026-04-19T10:00:12Z",
+    "result": {
+      "images": [
+        { "url": "https://cdn-video.51sux.com/results/sync-demo-001.png", "width": 1024, "height": 1024 }
+      ]
+    }
+  }
+}

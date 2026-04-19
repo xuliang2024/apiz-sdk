@@ -1,0 +1,9 @@
+{
+  "code": 200,
+  "data": {
+    "original_url": "https://example.com/external/image.png",
+    "cdn_url": "https://cdn-video.51sux.com/transferred/abc123.png",
+    "type": "image",
+    "size_bytes": 184320
+  }
+}

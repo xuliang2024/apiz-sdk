@@ -1,0 +1,11 @@
+{
+  "code": 200,
+  "data": {
+    "success": true,
+    "points_awarded": 87,
+    "vip_level": 1,
+    "balance": 12587,
+    "balance_yuan": 125.87,
+    "message": "签到成功！获得 87 积分"
+  }
+}

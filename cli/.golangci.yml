@@ -1,0 +1,53 @@
+# golangci-lint config for the apiz CLI.
+# Phase 1B uses a conservative ruleset; expand in Phase 4B.
+
+run:
+  timeout: 3m
+  tests: true
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gofmt
+    - goimports
+    - misspell
+    - revive
+    - unconvert
+
+linters-settings:
+  goimports:
+    local-prefixes: github.com/apiz-ai/apiz-cli
+  revive:
+    rules:
+      - name: blank-imports
+      - name: context-as-argument
+      - name: context-keys-type
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: increment-decrement
+      - name: indent-error-flow
+      - name: range
+      - name: receiver-naming
+      - name: redefines-builtin-id
+      - name: superfluous-else
+      - name: unexported-return
+      - name: unused-parameter
+      - name: unreachable-code
+      - name: var-declaration
+
+issues:
+  exclude-dirs:
+    - bin
+    - dist
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
+        - revive

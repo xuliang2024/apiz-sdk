@@ -1,0 +1,11 @@
+{
+  "code": 200,
+  "data": {
+    "user_id": 1234,
+    "balance": 12500,
+    "balance_yuan": 125.0,
+    "vip_level": 1,
+    "unit": "积分",
+    "exchange_rate": "1积分 = 0.01元"
+  }
+}

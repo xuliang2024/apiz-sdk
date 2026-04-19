@@ -1,0 +1,4 @@
+{
+  "code": 401,
+  "detail": "Invalid or missing API key. Get one at https://www.xskill.ai/#/v2/api-keys"
+}

@@ -1,0 +1,63 @@
+{
+  "name": "@apiz/sdk",
+  "version": "0.1.0",
+  "description": "Official TypeScript SDK for the apiz.ai AI generation platform",
+  "keywords": [
+    "apiz",
+    "apiz.ai",
+    "ai",
+    "image-generation",
+    "video-generation",
+    "tts",
+    "sdk"
+  ],
+  "homepage": "https://apiz.ai",
+  "bugs": "https://github.com/xuliang2024/apiz-sdk/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xuliang2024/apiz-sdk.git",
+    "directory": "packages/sdk"
+  },
+  "license": "Apache-2.0",
+  "author": "apiz.ai",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist .vitest-cache *.tsbuildinfo",
+    "lint": "eslint src tests",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "@typescript-eslint/parser": "^8.8.1",
+    "eslint": "^9.12.0",
+    "msw": "^2.4.9",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.2"
+  }
+}

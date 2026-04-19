@@ -1,0 +1,5 @@
+# Internal packages live here. Populated in Phase 4B:
+#   internal/api/        HTTP client mirroring @apiz/sdk
+#   internal/config/     ~/.config/apiz/config.toml reader/writer
+#   internal/output/     json/yaml/table renderers
+#   internal/poll/       task polling helpers

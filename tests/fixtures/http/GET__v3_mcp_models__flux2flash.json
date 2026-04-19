@@ -1,0 +1,26 @@
+{
+  "code": 200,
+  "data": {
+    "id": "fal-ai/flux-2/flash",
+    "name": "Flux 2 Flash",
+    "description": "Fast text-to-image model",
+    "category": "image",
+    "capability": "t2i",
+    "channel": "fal",
+    "params_schema": {
+      "type": "object",
+      "required": ["prompt"],
+      "properties": {
+        "prompt": { "type": "string", "description": "Text prompt" },
+        "image_size": {
+          "type": "string",
+          "enum": ["square_hd", "landscape_16_9", "portrait_4_3"],
+          "default": "square_hd"
+        },
+        "num_inference_steps": { "type": "integer", "default": 4, "minimum": 1, "maximum": 12 }
+      }
+    },
+    "stats": { "success_rate": 0.99, "pending_tasks": 0, "processing_tasks": 3 },
+    "pricing": { "unit": "积分", "amount": 5 }
+  }
+}

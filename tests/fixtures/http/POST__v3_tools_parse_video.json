@@ -1,0 +1,11 @@
+{
+  "code": 200,
+  "data": {
+    "platform": "douyin",
+    "title": "Public sample video",
+    "author": "demo_author",
+    "video_url": "https://cdn-video.51sux.com/parsed/sample.mp4",
+    "cover_url": "https://cdn-video.51sux.com/parsed/sample-cover.jpg",
+    "duration": 12.3
+  }
+}

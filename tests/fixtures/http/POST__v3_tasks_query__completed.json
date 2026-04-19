@@ -1,0 +1,20 @@
+{
+  "code": 200,
+  "data": {
+    "task_id": "task_async_demo_001",
+    "status": "completed",
+    "channel": "api",
+    "model": "wan/v2.6/image-to-video",
+    "completed_at": "2026-04-19T10:01:30Z",
+    "result": {
+      "videos": [
+        {
+          "url": "https://cdn-video.51sux.com/results/async-demo-001.mp4",
+          "duration": 5,
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    }
+  }
+}

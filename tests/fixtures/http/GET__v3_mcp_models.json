@@ -1,0 +1,41 @@
+{
+  "code": 200,
+  "data": {
+    "models": [
+      {
+        "id": "fal-ai/flux-2/flash",
+        "name": "Flux 2 Flash",
+        "category": "image",
+        "capability": "t2i",
+        "cover_url": "https://cdn-video.51sux.com/models/flux-2-flash.jpg",
+        "tags": ["fast", "image", "english"],
+        "isHot": true,
+        "stats": { "success_rate": 0.99, "pending_tasks": 0, "processing_tasks": 3 },
+        "pricing": { "unit": "积分", "amount": 5 }
+      },
+      {
+        "id": "jimeng-4.5",
+        "name": "即梦 4.5",
+        "category": "image",
+        "capability": "t2i",
+        "cover_url": "https://cdn-video.51sux.com/models/jimeng-4.5.jpg",
+        "tags": ["chinese", "image", "sync"],
+        "isHot": true,
+        "stats": { "success_rate": 0.98, "pending_tasks": 1, "processing_tasks": 5 },
+        "pricing": { "unit": "积分", "amount": 8 }
+      },
+      {
+        "id": "wan/v2.6/image-to-video",
+        "name": "Wan 2.6 (image-to-video)",
+        "category": "video",
+        "capability": "i2v",
+        "cover_url": "https://cdn-video.51sux.com/models/wan-2.6-i2v.jpg",
+        "tags": ["video", "i2v"],
+        "isHot": false,
+        "stats": { "success_rate": 0.95, "pending_tasks": 0, "processing_tasks": 2 },
+        "pricing": { "unit": "积分", "amount": 200 }
+      }
+    ],
+    "total": 3
+  }
+}

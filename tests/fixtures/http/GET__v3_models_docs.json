@@ -1,0 +1,12 @@
+{
+  "code": 200,
+  "data": {
+    "id": "fal-ai/flux-2/flash",
+    "name": "Flux 2 Flash",
+    "lang": "en",
+    "tutorial": "# Flux 2 Flash\n\nGenerate images quickly with simple prompts.\n\n## Parameters\n- `prompt` (required)\n- `image_size`\n",
+    "examples": [
+      { "title": "Simple cat", "params": { "prompt": "a cat on rainbow" } }
+    ]
+  }
+}

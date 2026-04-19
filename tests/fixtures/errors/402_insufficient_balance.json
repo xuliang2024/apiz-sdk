@@ -1,0 +1,5 @@
+{
+  "code": 402,
+  "detail": "Insufficient balance: required 200 points, have 50 points",
+  "data": { "required": 200, "available": 50 }
+}
