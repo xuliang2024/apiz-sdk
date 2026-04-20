@@ -56,13 +56,20 @@ jobs:
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           SCOOP_BUCKET_TOKEN: ${{ secrets.SCOOP_BUCKET_TOKEN }}
       - name: Upload to Cloudflare R2 (apiz.ai/cli)
+        # Soft-fail: only runs when goreleaser produced artifacts, and won't
+        # turn the whole job red if R2_* secrets aren't configured yet.
         if: always() && hashFiles('cli/dist/checksums.txt') != ''
+        continue-on-error: true
         env:
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_CLI_BUCKET: ${{ vars.R2_CLI_BUCKET || 'apiz-cli' }}
         run: |
+          if [ -z "$R2_ACCOUNT_ID" ]; then
+            echo "::warning::R2_ACCOUNT_ID not set; skipping apiz.ai/cli mirror upload"
+            exit 0
+          fi
           version="${{ github.event.inputs.version }}"
           if [ -z "$version" ]; then
             version="${GITHUB_REF_NAME#cli-}"  # cli-v0.1.0 → v0.1.0
@@ -74,6 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: release
     if: ${{ !github.event.inputs.skip_worker }}
+    continue-on-error: true
     defaults:
       run:
         working-directory: cli/cloudflare
@@ -86,4 +94,9 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-        run: npx -y wrangler@latest deploy
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN not set; skipping Worker deploy"
+            exit 0
+          fi
+          npx -y wrangler@latest deploy
