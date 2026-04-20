@@ -49,30 +49,33 @@ changelog:
       - "^test:"
       - "^chore:"
 
-brews:
-  - name: apiz
-    repository:
-      owner: apiz-ai
-      name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    commit_author:
-      name: apiz-bot
-      email: bot@apiz.ai
-    homepage: https://apiz.ai
-    description: Single-binary CLI for the apiz.ai AI generation platform
-    license: Apache-2.0
-    test: |
-      system "#{bin}/apiz", "--version"
-
-scoops:
-  - name: apiz
-    repository:
-      owner: apiz-ai
-      name: scoop-bucket
-      token: "{{ .Env.SCOOP_BUCKET_TOKEN }}"
-    commit_author:
-      name: apiz-bot
-      email: bot@apiz.ai
-    homepage: https://apiz.ai
-    description: Single-binary CLI for the apiz.ai AI generation platform
-    license: Apache-2.0
+# brews / scoops disabled until apiz-ai/homebrew-tap and apiz-ai/scoop-bucket
+# repos exist + HOMEBREW_TAP_TOKEN / SCOOP_BUCKET_TOKEN secrets are configured.
+# Until then users install via `curl -fsSL https://apiz.ai/cli | sh` (R2) or
+# direct GitHub Release downloads.
+#
+# To re-enable, restore this block and set the secrets in the GitHub repo:
+#
+# brews:
+#   - name: apiz
+#     repository:
+#       owner: apiz-ai
+#       name: homebrew-tap
+#       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+#     commit_author: { name: apiz-bot, email: bot@apiz.ai }
+#     homepage: https://apiz.ai
+#     description: Single-binary CLI for the apiz.ai AI generation platform
+#     license: Apache-2.0
+#     test: |
+#       system "#{bin}/apiz", "--version"
+#
+# scoops:
+#   - name: apiz
+#     repository:
+#       owner: apiz-ai
+#       name: scoop-bucket
+#       token: "{{ .Env.SCOOP_BUCKET_TOKEN }}"
+#     commit_author: { name: apiz-bot, email: bot@apiz.ai }
+#     homepage: https://apiz.ai
+#     description: Single-binary CLI for the apiz.ai AI generation platform
+#     license: Apache-2.0
