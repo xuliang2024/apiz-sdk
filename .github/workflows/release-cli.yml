@@ -16,7 +16,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: sdk/cli
+    working-directory: cli
 
 jobs:
   release:
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: "1.21"
-          cache-dependency-path: sdk/cli/go.mod
+          cache-dependency-path: cli/go.mod
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -43,7 +43,7 @@ jobs:
           distribution: goreleaser
           version: "~> v2"
           args: release --clean
-          workdir: sdk/cli
+          workdir: cli
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
     if: ${{ !github.event.inputs.skip_worker }}
     defaults:
       run:
-        working-directory: sdk/cli/cloudflare
+        working-directory: cli/cloudflare
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

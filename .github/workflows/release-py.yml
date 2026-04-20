@@ -12,7 +12,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: sdk/python
+    working-directory: python
 
 jobs:
   release:

@@ -4,9 +4,9 @@ on:
   push:
     branches: [master, main]
     paths:
-      - "sdk/.changeset/**"
-      - "sdk/packages/**"
-      - "sdk/.github/workflows/release-js.yml"
+      - ".changeset/**"
+      - "packages/**"
+      - ".github/workflows/release-js.yml"
   workflow_dispatch:
 
 permissions:
@@ -16,7 +16,7 @@ permissions:
 
 defaults:
   run:
-    working-directory: sdk
+    working-directory: .
 
 jobs:
   release:
@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-          cache-dependency-path: sdk/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
           registry-url: "https://registry.npmjs.org/"
       - name: Install
         run: pnpm install --no-frozen-lockfile
@@ -46,7 +46,7 @@ jobs:
         with:
           publish: pnpm release
           version: pnpm version
-          cwd: sdk
+          cwd: .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
