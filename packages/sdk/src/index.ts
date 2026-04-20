@@ -66,6 +66,15 @@ export type {
   SyncProviderInfo,
   GenerateOptions,
   GenerateResult,
+  AlignMode,
+  AlignPunctMode,
+  AlignParams,
+  AlignWord,
+  AlignUtterance,
+  AlignResult,
+  AlignHelperOptions,
 } from "./types.js";
 
 export type { SpeakHelperOptions } from "./helpers/speak.js";
+
+export { CaptioningResource, parseAlignResult } from "./resources/captioning.js";

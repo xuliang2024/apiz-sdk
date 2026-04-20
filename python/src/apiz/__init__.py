@@ -15,7 +15,14 @@ from ._errors import (
     ApizValidationError,
     error_from_status,
 )
+from ._resources.captioning import parse_align_result
 from ._types import (
+    AlignMode,
+    AlignParams,
+    AlignPunctMode,
+    AlignResult,
+    AlignUtterance,
+    AlignWord,
     BalanceResponse,
     Channel,
     CheckinResponse,
@@ -50,6 +57,12 @@ __version__ = "0.1.0"
 
 __all__ = [
     # Clients
+    "AlignMode",
+    "AlignParams",
+    "AlignPunctMode",
+    "AlignResult",
+    "AlignUtterance",
+    "AlignWord",
     "Apiz",
     "ApizAuthenticationError",
     "ApizConnectionError",
@@ -94,4 +107,5 @@ __all__ = [
     # Meta
     "__version__",
     "error_from_status",
+    "parse_align_result",
 ]

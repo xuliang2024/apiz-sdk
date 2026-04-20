@@ -290,6 +290,67 @@ export interface SyncProviderInfo {
   media_types: string[];
 }
 
+// ---------- Captioning / Forced Alignment ----------
+
+/**
+ * Caption alignment mode. Maps to backend model:
+ * - `speech` → `volcengine/captioning/ata-speech`
+ * - `singing` → `volcengine/captioning/ata-singing`
+ */
+export type AlignMode = "speech" | "singing";
+
+/**
+ * Punctuation mode for the aligner output.
+ * - 1 = omit trailing comma/period at sentence end (default)
+ * - 2 = replace some punctuation with spaces
+ * - 3 = preserve original punctuation
+ */
+export type AlignPunctMode = 1 | 2 | 3;
+
+export interface AlignParams {
+  /** Audio file URL (mp3/wav/m4a etc.). Max 120 minutes. */
+  audio_url: string;
+  /** The known subtitle text or lyric. Returned timestamps will align word-by-word to this text. */
+  audio_text: string;
+  /** Speech (default) or singing. */
+  mode?: AlignMode;
+  /** Punctuation mode, see {@link AlignPunctMode}. Defaults to 1. */
+  sta_punc_mode?: AlignPunctMode;
+}
+
+export interface AlignWord {
+  text: string;
+  /** Milliseconds from audio start. */
+  start_time: number;
+  /** Milliseconds from audio start. */
+  end_time: number;
+}
+
+export interface AlignUtterance {
+  text: string;
+  start_time: number;
+  end_time: number;
+  words: AlignWord[];
+}
+
+export interface AlignResult {
+  /** Audio duration in seconds. */
+  duration: number;
+  utterances: AlignUtterance[];
+  /** Underlying backend task id for traceability. */
+  task_id?: string;
+  /** Credits charged. */
+  price?: number;
+}
+
+export interface AlignHelperOptions {
+  /** Override default poll interval / timeout for the underlying task. */
+  pollInterval?: number;
+  timeout?: number;
+  signal?: AbortSignal;
+  onProgress?: (status: TaskQueryResponse) => void;
+}
+
 // ---------- Helpers (top-level) ----------
 
 export interface GenerateOptions {

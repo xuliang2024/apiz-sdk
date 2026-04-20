@@ -9,6 +9,7 @@ language that fits your toolchain.
 | `01-generate-image` | Submit a sync image generation and print the result URL | [ts](01-generate-image/index.ts), [py](01-generate-image/main.py), [sh](01-generate-image/cli.sh) |
 | `02-poll-async-task` | Submit an async video task and poll until it finishes | [ts](02-poll-async-task/index.ts), [py](02-poll-async-task/main.py), [sh](02-poll-async-task/cli.sh) |
 | `03-parse-and-tts` | Parse a video link (free) and synthesize a short voice-over | [ts](03-parse-and-tts/index.ts), [py](03-parse-and-tts/main.py), [sh](03-parse-and-tts/cli.sh) |
+| `04-align-captions` | Forced alignment: audio + known subtitle → word-level millisecond timestamps | [ts](04-align-captions/index.ts), [py](04-align-captions/main.py), [sh](04-align-captions/cli.sh) |
 
 All examples read `APIZ_API_KEY` from the environment. Get a key at
 <https://apiz.ai/#/v2/api-keys>.

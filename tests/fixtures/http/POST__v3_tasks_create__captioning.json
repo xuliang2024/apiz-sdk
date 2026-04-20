@@ -1,0 +1,11 @@
+{
+  "code": 200,
+  "data": {
+    "task_id": "task_volc_ata_001",
+    "status": "pending",
+    "channel": "api",
+    "model": "volcengine/captioning/ata-speech",
+    "price": 10,
+    "created_at": "2026-04-20T20:51:00Z"
+  }
+}

@@ -289,3 +289,42 @@ class SyncVideoResponse(BaseModel):
 
 
 GenerateResult = Union[TaskCreateResponse, TaskQueryResponse]
+
+
+# ---------- Captioning / Forced Alignment ----------
+
+AlignMode = Literal["speech", "singing"]
+AlignPunctMode = Literal[1, 2, 3]
+
+
+class AlignParams(TypedDict, total=False):
+    audio_url: str
+    audio_text: str
+    mode: NotRequired[AlignMode]
+    sta_punc_mode: NotRequired[AlignPunctMode]
+
+
+class AlignWord(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    text: str
+    start_time: int  # ms
+    end_time: int    # ms
+
+
+class AlignUtterance(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    text: str
+    start_time: int
+    end_time: int
+    words: list[AlignWord]
+
+
+class AlignResult(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    duration: float
+    utterances: list[AlignUtterance]
+    task_id: Optional[str] = None
+    price: Optional[float] = None

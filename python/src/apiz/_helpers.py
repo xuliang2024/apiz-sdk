@@ -1,11 +1,14 @@
-"""High-level helpers: generate() and speak() for both sync and async clients."""
+"""High-level helpers: generate(), speak(), align() for sync and async clients."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Callable, Optional, Union
 
 from ._errors import ApizError
+from ._resources.captioning import parse_align_result
 from ._types import (
+    AlignParams,
+    AlignResult,
     GenerateResult,
     SpeakModel,
     SynthesizeResponse,
@@ -125,3 +128,50 @@ async def speak_async(
     return await client.voices.synthesize(
         text=text, voice_id=voice_id, model=model, speed=speed
     )
+
+
+# ---------- align (forced alignment) ----------
+
+
+def align_sync(
+    client: Apiz,
+    params: AlignParams,
+    *,
+    poll_interval: float = 2.0,
+    timeout: float = 300.0,
+    on_progress: Optional[Callable[[TaskQueryResponse], None]] = None,
+) -> AlignResult:
+    submitted: TaskCreateResponse = client.captioning.create(params)
+    if submitted.status == "completed" and submitted.result is not None:
+        return parse_align_result(submitted)
+    if not submitted.task_id:
+        raise ApizError("apiz align: backend returned no task_id")
+    final = client.tasks.wait_for(
+        submitted.task_id,
+        poll_interval=poll_interval,
+        timeout=timeout,
+        on_progress=on_progress,
+    )
+    return parse_align_result(final)
+
+
+async def align_async(
+    client: AsyncApiz,
+    params: AlignParams,
+    *,
+    poll_interval: float = 2.0,
+    timeout: float = 300.0,
+    on_progress: Optional[Callable[[TaskQueryResponse], None]] = None,
+) -> AlignResult:
+    submitted = await client.captioning.create(params)
+    if submitted.status == "completed" and submitted.result is not None:
+        return parse_align_result(submitted)
+    if not submitted.task_id:
+        raise ApizError("apiz align: backend returned no task_id")
+    final = await client.tasks.wait_for(
+        submitted.task_id,
+        poll_interval=poll_interval,
+        timeout=timeout,
+        on_progress=on_progress,
+    )
+    return parse_align_result(final)

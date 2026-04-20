@@ -57,12 +57,23 @@ casing differs (camelCase in TS/Go, snake_case in Python).
 | `client.tools.parseVideo(url)` | `client.tools.parse_video(url)` | `client.ParseVideo(ctx, url)` |
 | `client.tools.transferUrl(url, "image" \| "audio")` | `client.tools.transfer_url(url, type=)` | `client.TransferURL(ctx, url, type)` |
 
+### `captioning` (forced alignment)
+
+Submit audio + known subtitle/lyric text and receive structured millisecond
+timestamps. Backed by `volcengine/captioning/ata-{speech,singing}`.
+
+| TS | Python | Go |
+|---|---|---|
+| `client.captioning.create({ audio_url, audio_text, mode? })` | `client.captioning.create({"audio_url": ..., "audio_text": ..., "mode": ...})` | (use `client.Align(ctx, params, opts)`) |
+| `client.captioning.modelFor(mode)` | `client.captioning.model_for(mode)` | `api.CaptioningModelFor(mode)` |
+
 ## High-level helpers
 
 | TS | Python | Go (CLI command) |
 |---|---|---|
 | `client.generate({ model, prompt, image_url?, ..., pollInterval?, timeout?, onProgress? })` | `client.generate(model=, prompt=, image_url=, ...)` | `apiz generate "..." --model X --wait` |
 | `client.speak(text, { voice_id?, model?, speed? })` | `client.speak(text, voice_id=, model=)` | `apiz speak "..." [--voice X] [--output-file out.mp3]` |
+| `client.align({ audio_url, audio_text, mode?, sta_punc_mode? })` | `client.align({"audio_url": ..., "audio_text": ..., "mode": ...})` | `apiz align "..." --audio URL [--mode singing] [--output-file out.json]` |
 
 ## Errors
 

@@ -6,9 +6,17 @@ from typing import Any, Callable, Optional, Union
 
 import httpx
 
-from ._helpers import generate_async, generate_sync, speak_async, speak_sync
+from ._helpers import (
+    align_async,
+    align_sync,
+    generate_async,
+    generate_sync,
+    speak_async,
+    speak_sync,
+)
 from ._http import AsyncHttpClient, SyncHttpClient, resolve_config
 from ._resources.account import AccountResource, AsyncAccountResource
+from ._resources.captioning import AsyncCaptioningResource, CaptioningResource
 from ._resources.models import AsyncModelsResource, ModelsResource
 from ._resources.skills import AsyncSkillsResource, SkillsResource
 from ._resources.sync_gen import AsyncSyncGenResource, SyncGenResource
@@ -16,6 +24,8 @@ from ._resources.tasks import AsyncTasksResource, TasksResource
 from ._resources.tools import AsyncToolsResource, ToolsResource
 from ._resources.voices import AsyncVoicesResource, VoicesResource
 from ._types import (
+    AlignParams,
+    AlignResult,
     GenerateResult,
     SpeakModel,
     SynthesizeResponse,
@@ -51,6 +61,7 @@ class Apiz:
         self.skills = SkillsResource(self._http)
         self.tools = ToolsResource(self._http)
         self.sync = SyncGenResource(self._http)
+        self.captioning = CaptioningResource(self._http)
 
     @property
     def api_key(self) -> str:
@@ -111,6 +122,22 @@ class Apiz:
     ) -> SynthesizeResponse:
         return speak_sync(self, text, voice_id=voice_id, model=model, speed=speed)
 
+    def align(
+        self,
+        params: AlignParams,
+        *,
+        poll_interval: float = 2.0,
+        timeout: float = 300.0,
+        on_progress: Optional[Callable[[TaskQueryResponse], None]] = None,
+    ) -> AlignResult:
+        """Forced alignment: input audio + known subtitle/lyric, get word-level timestamps.
+
+        Set ``params["mode"] = "singing"`` for songs (defaults to speech).
+        """
+        return align_sync(
+            self, params, poll_interval=poll_interval, timeout=timeout, on_progress=on_progress
+        )
+
 
 class AsyncApiz:
     """Asynchronous client for the apiz.ai platform."""
@@ -140,6 +167,7 @@ class AsyncApiz:
         self.skills = AsyncSkillsResource(self._http)
         self.tools = AsyncToolsResource(self._http)
         self.sync = AsyncSyncGenResource(self._http)
+        self.captioning = AsyncCaptioningResource(self._http)
 
     @property
     def api_key(self) -> str:
@@ -199,3 +227,16 @@ class AsyncApiz:
         speed: float = 1.0,
     ) -> SynthesizeResponse:
         return await speak_async(self, text, voice_id=voice_id, model=model, speed=speed)
+
+    async def align(
+        self,
+        params: AlignParams,
+        *,
+        poll_interval: float = 2.0,
+        timeout: float = 300.0,
+        on_progress: Optional[Callable[[TaskQueryResponse], None]] = None,
+    ) -> AlignResult:
+        """Async forced alignment. See :meth:`Apiz.align`."""
+        return await align_async(
+            self, params, poll_interval=poll_interval, timeout=timeout, on_progress=on_progress
+        )

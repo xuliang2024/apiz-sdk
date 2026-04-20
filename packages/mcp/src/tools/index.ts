@@ -2,6 +2,7 @@ import type { Apiz } from "apiz-sdk";
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 
 import { accountTool } from "./account.js";
+import { alignTool } from "./align.js";
 import { generateTool } from "./generate.js";
 import { getResultTool } from "./getResult.js";
 import { guideTool } from "./guide.js";
@@ -17,6 +18,7 @@ export const TOOL_NAMES = [
   "guide",
   "account",
   "speak",
+  "align",
   "parse_video",
   "transfer_url",
 ] as const;
@@ -37,6 +39,7 @@ export function buildTools(): Record<ToolName, ToolHandler> {
     guide: guideTool,
     account: accountTool,
     speak: speakTool,
+    align: alignTool,
     parse_video: parseVideoTool,
     transfer_url: transferUrlTool,
   };

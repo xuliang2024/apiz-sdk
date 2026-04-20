@@ -136,3 +136,34 @@ type SkillSummary struct {
 	Description string   `json:"description,omitempty"`
 	Models      []string `json:"models,omitempty"`
 }
+
+// AlignWord is one word/character with its millisecond offsets.
+type AlignWord struct {
+	Text      string `json:"text"`
+	StartTime int    `json:"start_time"`
+	EndTime   int    `json:"end_time"`
+}
+
+// AlignUtterance groups words into a single sentence.
+type AlignUtterance struct {
+	Text      string      `json:"text"`
+	StartTime int         `json:"start_time"`
+	EndTime   int         `json:"end_time"`
+	Words     []AlignWord `json:"words"`
+}
+
+// AlignResult is the structured output of `apiz align`.
+type AlignResult struct {
+	Duration   float64          `json:"duration"`
+	Utterances []AlignUtterance `json:"utterances"`
+	TaskID     string           `json:"task_id,omitempty"`
+	Price      float64          `json:"price,omitempty"`
+}
+
+// AlignParams gathers the user-facing knobs of forced alignment.
+type AlignParams struct {
+	AudioURL    string
+	AudioText   string
+	Mode        string // "speech" (default) or "singing"
+	StaPuncMode int    // 0 (=> 1 default), 1, 2, or 3
+}

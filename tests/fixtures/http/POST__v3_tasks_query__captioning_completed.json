@@ -1,0 +1,65 @@
+{
+  "code": 200,
+  "data": {
+    "task_id": "task_volc_ata_001",
+    "status": "completed",
+    "channel": "api",
+    "model": "volcengine/captioning/ata-speech",
+    "completed_at": "2026-04-20T20:51:05Z",
+    "result": {
+      "duration": 5.503,
+      "utterances": [
+        {
+          "text": "如果您没有其他需要举报的话",
+          "start_time": 1,
+          "end_time": 1840,
+          "words": [
+            { "text": "如", "start_time": 1, "end_time": 140 },
+            { "text": "果", "start_time": 140, "end_time": 260 },
+            { "text": "您", "start_time": 260, "end_time": 360 },
+            { "text": "没", "start_time": 360, "end_time": 460 },
+            { "text": "有", "start_time": 460, "end_time": 580 },
+            { "text": "其", "start_time": 580, "end_time": 700 },
+            { "text": "他", "start_time": 700, "end_time": 820 },
+            { "text": "需", "start_time": 820, "end_time": 940 },
+            { "text": "要", "start_time": 940, "end_time": 1060 },
+            { "text": "举", "start_time": 1060, "end_time": 1180 },
+            { "text": "报", "start_time": 1180, "end_time": 1300 },
+            { "text": "的", "start_time": 1300, "end_time": 1420 },
+            { "text": "话", "start_time": 1420, "end_time": 1840 }
+          ]
+        },
+        {
+          "text": "这边就先挂断了",
+          "start_time": 1841,
+          "end_time": 3138,
+          "words": [
+            { "text": "这", "start_time": 1841, "end_time": 1980 },
+            { "text": "边", "start_time": 1980, "end_time": 2100 },
+            { "text": "就", "start_time": 2100, "end_time": 2220 },
+            { "text": "先", "start_time": 2220, "end_time": 2340 },
+            { "text": "挂", "start_time": 2340, "end_time": 2478 },
+            { "text": "断", "start_time": 2481, "end_time": 2638 },
+            { "text": "了", "start_time": 2681, "end_time": 3138 }
+          ]
+        },
+        {
+          "text": "祝您生活愉快，再见",
+          "start_time": 3241,
+          "end_time": 5505,
+          "words": [
+            { "text": "祝", "start_time": 3241, "end_time": 3398 },
+            { "text": "您", "start_time": 3401, "end_time": 3540 },
+            { "text": "生", "start_time": 3540, "end_time": 3678 },
+            { "text": "活", "start_time": 3681, "end_time": 3820 },
+            { "text": "愉", "start_time": 3820, "end_time": 3958 },
+            { "text": "快", "start_time": 3961, "end_time": 4118 },
+            { "text": "，", "start_time": 4118, "end_time": 4118 },
+            { "text": "再", "start_time": 5001, "end_time": 5140 },
+            { "text": "见", "start_time": 5140, "end_time": 5505 }
+          ]
+        }
+      ]
+    }
+  }
+}
