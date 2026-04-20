@@ -37,6 +37,9 @@ jobs:
         run: pip install boto3
       - name: Test
         run: go test -race ./...
+      - name: Strip cli- prefix for goreleaser semver
+        if: startsWith(github.ref_name, 'cli-')
+        run: echo "GORELEASER_CURRENT_TAG=${GITHUB_REF_NAME#cli-}" >> $GITHUB_ENV
       - name: goreleaser
         uses: goreleaser/goreleaser-action@v6
         with:
@@ -44,6 +47,8 @@ jobs:
           version: "~> v2"
           args: release --clean
           workdir: cli
+        env:
+          GORELEASER_CURRENT_TAG: ${{ env.GORELEASER_CURRENT_TAG }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
