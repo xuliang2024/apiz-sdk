@@ -48,8 +48,6 @@ jobs:
           args: release --clean
           workdir: cli
         env:
-          GORELEASER_CURRENT_TAG: ${{ env.GORELEASER_CURRENT_TAG }}
-        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           SCOOP_BUCKET_TOKEN: ${{ secrets.SCOOP_BUCKET_TOKEN }}
