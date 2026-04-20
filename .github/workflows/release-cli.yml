@@ -45,7 +45,11 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --clean
+          # --skip=validate: tag is `cli-vX.Y.Z`, GORELEASER_CURRENT_TAG strips the
+          # `cli-` prefix so the GitHub Release name is clean (vX.Y.Z), but git
+          # only knows the prefixed tag. Skipping validate avoids the
+          # "tag X was not made against commit Y" mismatch.
+          args: release --clean --skip=validate
           workdir: cli
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
