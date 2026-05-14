@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -18,6 +19,10 @@ const DefaultBaseURL = "https://api.apiz.ai"
 
 // DefaultTimeout is the per-request wall clock budget.
 const DefaultTimeout = 60 * time.Second
+
+// DefaultStorageAccessKey is the legacy storage access key accepted by
+// /api/storage/* endpoints. It can be overridden with APIZ_STORAGE_ACCESS_KEY.
+const DefaultStorageAccessKey = "sutui_storage_2024"
 
 // retryableStatuses lists HTTP codes that the client retries automatically.
 var retryableStatuses = map[int]bool{
@@ -203,11 +208,15 @@ func decodeError(body []byte, status int, method, path string) *APIError {
 	var env struct {
 		Code    int             `json:"code"`
 		Message string          `json:"message"`
+		Msg     string          `json:"msg"`
 		Detail  json.RawMessage `json:"detail"`
 		Data    json.RawMessage `json:"data"`
 	}
 	_ = json.Unmarshal(body, &env)
 	msg := env.Message
+	if msg == "" {
+		msg = env.Msg
+	}
 	if msg == "" {
 		var s string
 		if err := json.Unmarshal(env.Detail, &s); err == nil {
@@ -222,6 +231,94 @@ func decodeError(body []byte, status int, method, path string) *APIError {
 		_ = json.Unmarshal(env.Data, &detail)
 	}
 	return errorFromStatus(status, msg, env.Code, detail)
+}
+
+// StorageAccessKey resolves the storage endpoint access key.
+func StorageAccessKey() string {
+	if v := os.Getenv("APIZ_STORAGE_ACCESS_KEY"); v != "" {
+		return v
+	}
+	return DefaultStorageAccessKey
+}
+
+func (c *Client) postStorage(ctx context.Context, path string, body interface{}, out interface{}) error {
+	endpoint := c.cfg.BaseURL + path
+	bodyBytes, err := json.Marshal(body)
+	if err != nil {
+		return fmt.Errorf("marshal body: %w", err)
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(bodyBytes))
+	if err != nil {
+		return fmt.Errorf("build request: %w", err)
+	}
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", c.cfg.UserAgent)
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		if isTimeout(err) {
+			return &APIError{Kind: ErrTimeout, Message: err.Error()}
+		}
+		return &APIError{Kind: ErrConnection, Message: err.Error()}
+	}
+	respBody, _ := io.ReadAll(resp.Body)
+	_ = resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return decodeError(respBody, resp.StatusCode, http.MethodPost, path)
+	}
+
+	var env struct {
+		Code int             `json:"code"`
+		Msg  string          `json:"msg"`
+		Data json.RawMessage `json:"data"`
+	}
+	if err := json.Unmarshal(respBody, &env); err != nil {
+		return fmt.Errorf("decode response: %w", err)
+	}
+	if env.Code != 0 && env.Code != 200 {
+		if env.Msg == "" {
+			env.Msg = fmt.Sprintf("storage endpoint returned code %d", env.Code)
+		}
+		return errorFromStatus(env.Code, env.Msg, env.Code, nil)
+	}
+	if out == nil {
+		return nil
+	}
+	if len(env.Data) == 0 || string(env.Data) == "null" {
+		return fmt.Errorf("storage endpoint returned empty data")
+	}
+	return json.Unmarshal(env.Data, out)
+}
+
+func (c *Client) putPresigned(ctx context.Context, uploadURL, contentType string, body []byte) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, uploadURL, bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("build upload request: %w", err)
+	}
+	if contentType != "" {
+		req.Header.Set("Content-Type", contentType)
+	}
+	req.ContentLength = int64(len(body))
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		if isTimeout(err) {
+			return &APIError{Kind: ErrTimeout, Message: err.Error()}
+		}
+		return &APIError{Kind: ErrConnection, Message: err.Error()}
+	}
+	respBody, _ := io.ReadAll(resp.Body)
+	_ = resp.Body.Close()
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		msg := strings.TrimSpace(string(respBody))
+		if msg == "" {
+			msg = fmt.Sprintf("HTTP %d from presigned upload", resp.StatusCode)
+		}
+		return errorFromStatus(resp.StatusCode, msg, 0, nil)
+	}
+	return nil
 }
 
 // ---- Resource methods ----
@@ -372,6 +469,84 @@ func (c *Client) TransferURL(ctx context.Context, externalURL, mediaType string)
 		return nil, err
 	}
 	return &r, nil
+}
+
+// GetStorageUploadURL creates a presigned TOS PUT URL and final CDN URL.
+func (c *Client) GetStorageUploadURL(ctx context.Context, fileName, contentType, folder, storageAccessKey string) (*StorageUploadURLResponse, error) {
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+	if folder == "" {
+		folder = "cli-uploads"
+	}
+	if storageAccessKey == "" {
+		storageAccessKey = StorageAccessKey()
+	}
+	body := map[string]string{
+		"file_name":    fileName,
+		"content_type": contentType,
+		"folder":       folder,
+		"access_key":   storageAccessKey,
+	}
+	var r StorageUploadURLResponse
+	if err := c.postStorage(ctx, "/api/storage/get-upload-url", body, &r); err != nil {
+		return nil, err
+	}
+	return &r, nil
+}
+
+// ConfirmStorageUpload records a completed TOS upload in the backend database.
+func (c *Client) ConfirmStorageUpload(ctx context.Context, req StorageUploadParams, upload *StorageUploadURLResponse) (*StorageUploadResponse, error) {
+	if req.StorageAccessKey == "" {
+		req.StorageAccessKey = StorageAccessKey()
+	}
+	body := map[string]interface{}{
+		"file_key":     upload.FileKey,
+		"file_name":    req.FileName,
+		"public_url":   upload.PublicURL,
+		"content_type": req.ContentType,
+		"file_size":    req.FileSize,
+		"folder":       req.Folder,
+		"uploader":     req.Uploader,
+		"remark":       req.Remark,
+		"access_key":   req.StorageAccessKey,
+	}
+	var r StorageUploadResponse
+	if err := c.postStorage(ctx, "/api/storage/confirm-upload", body, &r); err != nil {
+		return nil, err
+	}
+	r.FileKey = upload.FileKey
+	r.FileSize = req.FileSize
+	r.ContentType = req.ContentType
+	r.Folder = req.Folder
+	if r.PublicURL == "" {
+		r.PublicURL = upload.PublicURL
+	}
+	if r.FileName == "" {
+		r.FileName = req.FileName
+	}
+	return &r, nil
+}
+
+// UploadStorageFile uploads a local file payload through the storage endpoints.
+func (c *Client) UploadStorageFile(ctx context.Context, params StorageUploadParams) (*StorageUploadResponse, error) {
+	if params.Folder == "" {
+		params.Folder = "cli-uploads"
+	}
+	if params.ContentType == "" {
+		params.ContentType = "application/octet-stream"
+	}
+	if params.StorageAccessKey == "" {
+		params.StorageAccessKey = StorageAccessKey()
+	}
+	upload, err := c.GetStorageUploadURL(ctx, params.FileName, params.ContentType, params.Folder, params.StorageAccessKey)
+	if err != nil {
+		return nil, err
+	}
+	if err := c.putPresigned(ctx, upload.UploadURL, params.ContentType, params.Body); err != nil {
+		return nil, err
+	}
+	return c.ConfirmStorageUpload(ctx, params, upload)
 }
 
 // ListSkills returns the tutorial / skill catalog.

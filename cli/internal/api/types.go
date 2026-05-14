@@ -128,6 +128,38 @@ type TransferURLResponse struct {
 	SizeBytes   int64  `json:"size_bytes,omitempty"`
 }
 
+// StorageUploadURLResponse is returned by POST /api/storage/get-upload-url.
+type StorageUploadURLResponse struct {
+	UploadURL   string `json:"upload_url"`
+	PublicURL   string `json:"public_url"`
+	FileKey     string `json:"file_key"`
+	Method      string `json:"method"`
+	ContentType string `json:"content_type"`
+}
+
+// StorageUploadResponse is returned after a local file is uploaded and confirmed.
+type StorageUploadResponse struct {
+	ID          int64  `json:"id,omitempty"`
+	PublicURL   string `json:"public_url"`
+	FileKey     string `json:"file_key"`
+	FileName    string `json:"file_name"`
+	FileSize    int64  `json:"file_size"`
+	ContentType string `json:"content_type"`
+	Folder      string `json:"folder"`
+}
+
+// StorageUploadParams describes a local file upload to the persistent TOS bucket.
+type StorageUploadParams struct {
+	FileName         string
+	ContentType      string
+	Folder           string
+	FileSize         int64
+	Body             []byte
+	Uploader         string
+	Remark           string
+	StorageAccessKey string
+}
+
 // SkillSummary mirrors what's returned by GET /v3/mcp/skills.
 type SkillSummary struct {
 	ID          string   `json:"id"`

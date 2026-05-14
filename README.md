@@ -83,6 +83,7 @@ scoop install apiz              # Windows
 ```bash
 apiz auth login
 apiz generate "a cat on rainbow" --model fal-ai/flux-2/flash --wait
+apiz upload ./image.png
 ```
 
 ### MCP (for Cursor / Claude Desktop / Cline)
@@ -111,6 +112,8 @@ All SDKs honor the same configuration sources, in priority order:
 4. Built-in defaults (`baseURL` defaults to `https://api.apiz.ai`)
 
 The legacy `XSKILL_API_KEY` env var is also accepted for backward compatibility.
+The CLI also accepts `APIZ_STORAGE_ACCESS_KEY` for the local file upload
+storage endpoints.
 
 ## Repository layout
 

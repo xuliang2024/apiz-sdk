@@ -85,6 +85,8 @@ apiz auth login                 # save your key to ~/.config/apiz/config.toml
 apiz generate "a cat on rainbow" --model fal-ai/flux-2/flash --wait
 apiz models list --category image
 apiz parse https://v.douyin.com/xxxxx
+apiz transfer https://example.com/image.png --type image
+apiz upload ./image.png
 ```
 
 ## Tool ↔ resource cheat sheet

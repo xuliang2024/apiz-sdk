@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -117,6 +118,102 @@ func TestParseVideoOmitsAuth(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "douyin", r.Platform)
 	assert.Empty(t, capturedAuth, "parseVideo should not send Authorization header (free tool)")
+}
+
+func TestUploadStorageFileHappyPath(t *testing.T) {
+	var baseURL string
+	var putContentType string
+	var putBody string
+	var confirmBody map[string]interface{}
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/storage/get-upload-url", func(w http.ResponseWriter, r *http.Request) {
+		var body map[string]interface{}
+		_ = json.NewDecoder(r.Body).Decode(&body)
+		assert.Equal(t, "sutui_storage_2024", body["access_key"])
+		assert.Equal(t, "demo.txt", body["file_name"])
+		_, _ = w.Write([]byte(`{"code":200,"msg":"成功","data":{"upload_url":"` + baseURL + `/tos/demo","public_url":"https://cdn-ali-hk.51sux.com/storage/cli-uploads/demo.txt","file_key":"storage/cli-uploads/demo.txt","method":"PUT","content_type":"text/plain"}}`))
+	})
+	mux.HandleFunc("/tos/demo", func(w http.ResponseWriter, r *http.Request) {
+		putContentType = r.Header.Get("Content-Type")
+		data, _ := io.ReadAll(r.Body)
+		putBody = string(data)
+		w.WriteHeader(http.StatusOK)
+	})
+	mux.HandleFunc("/api/storage/confirm-upload", func(w http.ResponseWriter, r *http.Request) {
+		_ = json.NewDecoder(r.Body).Decode(&confirmBody)
+		_, _ = w.Write([]byte(`{"code":200,"msg":"成功","data":{"id":11,"public_url":"https://cdn-ali-hk.51sux.com/storage/cli-uploads/demo.txt","file_name":"demo.txt"}}`))
+	})
+	c, srv := newMockClient(t, mux)
+	baseURL = srv.URL
+
+	r, err := c.UploadStorageFile(context.Background(), StorageUploadParams{
+		FileName:    "demo.txt",
+		ContentType: "text/plain",
+		Folder:      "cli-uploads",
+		FileSize:    5,
+		Body:        []byte("hello"),
+	})
+	require.NoError(t, err)
+	assert.Equal(t, "https://cdn-ali-hk.51sux.com/storage/cli-uploads/demo.txt", r.PublicURL)
+	assert.Equal(t, "storage/cli-uploads/demo.txt", r.FileKey)
+	assert.Equal(t, int64(5), r.FileSize)
+	assert.Equal(t, "text/plain", putContentType)
+	assert.Equal(t, "hello", putBody)
+	assert.Equal(t, "storage/cli-uploads/demo.txt", confirmBody["file_key"])
+	assert.Equal(t, float64(5), confirmBody["file_size"])
+}
+
+func TestUploadStorageFileRejectsBusinessError(t *testing.T) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/storage/get-upload-url", func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(`{"code":403,"msg":"访问密钥错误","data":null}`))
+	})
+	c, _ := newMockClient(t, mux)
+
+	_, err := c.UploadStorageFile(context.Background(), StorageUploadParams{FileName: "x.png", Body: []byte("x")})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "访问密钥错误")
+	var apiErr *APIError
+	require.ErrorAs(t, err, &apiErr)
+	assert.Equal(t, ErrPermissionDenied, apiErr.Kind)
+}
+
+func TestUploadStorageFilePutFailure(t *testing.T) {
+	var baseURL string
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/storage/get-upload-url", func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(`{"code":200,"msg":"成功","data":{"upload_url":"` + baseURL + `/tos/fail","public_url":"https://cdn-ali-hk.51sux.com/x","file_key":"x","method":"PUT","content_type":"application/octet-stream"}}`))
+	})
+	mux.HandleFunc("/tos/fail", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusForbidden)
+		_, _ = w.Write([]byte("forbidden"))
+	})
+	c, srv := newMockClient(t, mux)
+	baseURL = srv.URL
+
+	_, err := c.UploadStorageFile(context.Background(), StorageUploadParams{FileName: "x.bin", Body: []byte("x")})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "forbidden")
+}
+
+func TestUploadStorageFileConfirmFailure(t *testing.T) {
+	var baseURL string
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/storage/get-upload-url", func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(`{"code":200,"msg":"成功","data":{"upload_url":"` + baseURL + `/tos/ok","public_url":"https://cdn-ali-hk.51sux.com/x","file_key":"x","method":"PUT","content_type":"application/octet-stream"}}`))
+	})
+	mux.HandleFunc("/tos/ok", func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+	mux.HandleFunc("/api/storage/confirm-upload", func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(`{"code":500,"msg":"确认上传失败","data":null}`))
+	})
+	c, srv := newMockClient(t, mux)
+	baseURL = srv.URL
+
+	_, err := c.UploadStorageFile(context.Background(), StorageUploadParams{FileName: "x.bin", Body: []byte("x")})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "确认上传失败")
 }
 
 func TestErrorMapping(t *testing.T) {

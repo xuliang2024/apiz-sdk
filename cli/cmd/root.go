@@ -67,6 +67,7 @@ func New(out, errOut io.Writer) *cobra.Command {
 	root.AddCommand(newAlignCmd(flags))
 	root.AddCommand(newParseCmd(flags))
 	root.AddCommand(newTransferCmd(flags))
+	root.AddCommand(newUploadCmd(flags))
 
 	return root
 }

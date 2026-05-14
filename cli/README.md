@@ -3,9 +3,8 @@
 Single-binary command-line tool for the [apiz.ai](https://apiz.ai) AI
 generation platform. Written in Go.
 
-> **Status: Phase 1B scaffolding.** Only `version` and `help` work. The full
-> command tree (`auth`, `generate`, `tasks`, `models`, `voices`, `speak`,
-> `account`, `parse`, `transfer`) arrives in Phase 4B.
+> The command tree covers auth, generation, tasks, models, voices, TTS, account
+> balance, public URL transfer, and local file upload.
 
 ## Install
 
@@ -44,6 +43,8 @@ apiz models list --category video
 apiz speak "你好世界" --voice male-qn-qingse --output hello.mp3
 apiz account balance
 apiz parse https://v.douyin.com/xxxxx
+apiz transfer https://example.com/image.png --type image
+apiz upload ./image.png --folder cli-uploads
 ```
 
 ## Configuration
@@ -51,9 +52,13 @@ apiz parse https://v.douyin.com/xxxxx
 Reads from (in order):
 
 1. CLI flags (`--api-key`, `--base-url`, `--profile`)
-2. Environment (`APIZ_API_KEY`, `APIZ_BASE_URL`, `APIZ_TIMEOUT`)
+2. Environment (`APIZ_API_KEY`, `APIZ_BASE_URL`, `APIZ_TIMEOUT`, `APIZ_STORAGE_ACCESS_KEY`)
 3. Profile file `~/.config/apiz/config.toml` (managed by `apiz auth login`)
 4. Built-in defaults
+
+`apiz transfer <url>` mirrors an already-public image/audio/video URL into the
+apiz CDN. `apiz upload <file>` uploads a local file through the TOS presigned
+URL flow and returns the final CDN URL.
 
 ## Development
 
